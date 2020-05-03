@@ -1,11 +1,20 @@
 FROM resin/rpi-raspbian:latest
-MAINTAINER Joaquín de la Zerda <joaquindelazerda@gmail.com>, Fernando Mayo <fernando@tutum.co>, Feng Honglin <hfeng@tutum.co>
+MAINTAINER Oscar Ortegano <oscarortegano@gmail.com>,Joaquín de la Zerda <joaquindelazerda@gmail.com>, Fernando Mayo <fernando@tutum.co>, Feng Honglin <hfeng@tutum.co>
 
 # Install packages
 ENV DEBIAN_FRONTEND noninteractive
+
 RUN apt-get update && \
-  apt-get -y install supervisor git apache2 libapache2-mod-php5 mysql-server php5-mysql pwgen php-apc php5-mcrypt && \
-  echo "ServerName localhost" >> /etc/apache2/apache2.conf
+  apt-get install wget apt-transport-https ca-certificates
+
+RUN  wget -q https://packages.sury.org/php/apt.gpg -O- | sudo apt-key add -  && \
+  echo "deb https://packages.sury.org/php/ jessie main" | sudo tee /etc/apt/sources.list.d/php7.list
+
+RUN apt-get update && \
+  apt-get purge 'php5*'
+
+RUN apt-get -y install supervisor git php7.0 php7.0-mysql apache2 libapache2-mod-php7.0 mariadb-server pwgen nano
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
 # Add image configuration and scripts
 ADD start-apache2.sh /start-apache2.sh
@@ -25,10 +34,12 @@ RUN chmod 755 /*.sh
 
 # config to enable .htaccess
 ADD apache_default /etc/apache2/sites-available/000-default.conf
-RUN a2enmod rewrite
+RUN a2enmod rewrite && \
+  service apache2 restart
 
 # Configure /app folder with sample app
-RUN git clone https://github.com/fermayo/hello-world-lamp.git /app
+# RUN git clone https://github.com/fermayo/hello-world-lamp.git /app
+RUN mkdir app && echo "<?php phpinfo();?>" >> app/index.php
 RUN mkdir -p /app && rm -fr /var/www/html && ln -s /app /var/www/html
 
 #Enviornment variables to configure php
@@ -38,5 +49,5 @@ ENV PHP_POST_MAX_SIZE 10M
 # Add volumes for MySQL 
 VOLUME  ["/etc/mysql", "/var/lib/mysql" ]
 
-EXPOSE 80 3306
+EXPOSE 80 443 3306
 CMD ["/run.sh"]
