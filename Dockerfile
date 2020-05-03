@@ -38,7 +38,6 @@ RUN a2enmod rewrite && \
   service apache2 restart
 
 # Configure /app folder with sample app
-# RUN git clone https://github.com/fermayo/hello-world-lamp.git /app
 RUN mkdir app && echo "<?php phpinfo();?>" >> app/index.php
 RUN mkdir -p /app && rm -fr /var/www/html && ln -s /app /var/www/html
 
