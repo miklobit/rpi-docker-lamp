@@ -13,7 +13,10 @@ RUN  wget -q https://packages.sury.org/php/apt.gpg -O- | sudo apt-key add -  && 
 RUN apt-get update && \
   apt-get purge 'php5*'
 
-RUN apt-get -y install supervisor git php7.0 php7.0-mysql apache2 libapache2-mod-php7.0 mariadb-server pwgen nano
+RUN apt-get -y install supervisor git 
+RUN php7.0 php7.0-mysql 
+RUN apache2 libapache2-mod-php7.0 
+RUN mariadb-server pwgen nano
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
 # Add image configuration and scripts
