@@ -1,5 +1,5 @@
-FROM resin/rpi-raspbian:latest
-MAINTAINER Oscar Ortegano <oscarortegano@gmail.com>,Joaquín de la Zerda <joaquindelazerda@gmail.com>, Fernando Mayo <fernando@tutum.co>, Feng Honglin <hfeng@tutum.co>
+FROM resin/rpi-raspbian:buster
+MAINTAINER MikloBit <miklobit@gmail.com>
 
 # Install packages
 ENV DEBIAN_FRONTEND noninteractive
@@ -8,7 +8,7 @@ RUN apt-get update && \
   apt-get install wget apt-transport-https ca-certificates
 
 RUN  wget -q https://packages.sury.org/php/apt.gpg -O- | sudo apt-key add -  && \
-  echo "deb https://packages.sury.org/php/ jessie main" | sudo tee /etc/apt/sources.list.d/php7.list
+  echo "deb https://packages.sury.org/php/ buster main" | sudo tee /etc/apt/sources.list.d/php7.list
 
 RUN apt-get update && \
   apt-get purge 'php5*'
