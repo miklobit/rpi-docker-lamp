@@ -13,6 +13,7 @@ RUN  wget -q https://packages.sury.org/php/apt.gpg -O- | sudo apt-key add -  && 
 RUN apt-get update && \
   apt-get purge 'php5*'
 
+RUN apt-get -y install apt-utils
 RUN apt-get -y install supervisor git 
 RUN apt-get -y install php7.0 php7.0-mysql 
 RUN apt-get -y install apache2 libapache2-mod-php7.0 
