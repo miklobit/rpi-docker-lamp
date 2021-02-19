@@ -18,6 +18,7 @@ RUN apt-get -y install supervisor git
 RUN apt-get -y install php7.3 php7.3-mysql 
 RUN apt-get -y install apache2 libapache2-mod-php7.3 
 RUN apt-get -y install mariadb-server pwgen nano
+RUN apt-get -y install mc
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
 # Add image configuration and scripts
@@ -42,7 +43,7 @@ RUN a2enmod rewrite && \
   service apache2 restart
 
 # Configure /app folder with sample app
-RUN mkdir app && echo "<?php phpinfo();?>" >> app/index.php
+RUN mkdir app && echo "<?php phpinfo(); ?>" >> app/index.php
 RUN mkdir -p /app && rm -fr /var/www/html && ln -s /app /var/www/html
 
 #Enviornment variables to configure php
