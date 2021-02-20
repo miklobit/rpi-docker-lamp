@@ -27,8 +27,10 @@ ADD start-mysqld.sh /start-mysqld.sh
 ADD run.sh /run.sh
 RUN chmod 755 /*.sh
 ADD my.cnf /etc/mysql/conf.d/my.cnf
+RUN mkdir -p /var/log/php-fpm
 ADD supervisord-apache2.conf /etc/supervisor/conf.d/supervisord-apache2.conf
 ADD supervisord-mysqld.conf /etc/supervisor/conf.d/supervisord-mysqld.conf
+ADD supervisord-php-fpm.conf /etc/supervisor/conf.d/supervisord-php-fpm.conf
 
 # Remove pre-installed database
 RUN rm -rf /var/lib/mysql/*
@@ -39,15 +41,15 @@ RUN chmod 755 /*.sh
 
 # config to enable .htaccess
 ADD apache_default /etc/apache2/sites-available/000-default.conf
-RUN a2enmod rewrite && \
-  service apache2 restart
-  
+
 RUN a2dismod php7.3 && \
     a2enmod proxy_fcgi setenvif && \
     a2enconf php7.3-fpm && \
   service apache2 restart  
-RUN systemctl enable php7.3-fpm  
 
+RUN a2enmod rewrite && \
+  service apache2 restart
+  
 # Configure /app folder with sample app
 RUN mkdir app && echo "<?php phpinfo(); ?>" >> app/index.php
 RUN mkdir -p /app && rm -fr /var/www/html && ln -s /app /var/www/html
