@@ -15,7 +15,7 @@ RUN apt-get update && \
 
 RUN apt-get -y install apt-utils
 RUN apt-get -y install supervisor git 
-RUN apt-get -y install php7.3 php7.3-mysql 
+RUN apt-get -y install php7.3 php7.3-mysql php7.3-fpm 
 RUN apt-get -y install apache2 libapache2-mod-php7.3 
 RUN apt-get -y install mariadb-server pwgen nano
 RUN apt-get -y install mc
@@ -41,6 +41,11 @@ RUN chmod 755 /*.sh
 ADD apache_default /etc/apache2/sites-available/000-default.conf
 RUN a2enmod rewrite && \
   service apache2 restart
+  
+RUN a2dismod php7.3 && \
+    a2enmod proxy_fcgi setenvif && \
+    a2enconf php7.3-fpm && \
+  service apache2 restart  
 
 # Configure /app folder with sample app
 RUN mkdir app && echo "<?php phpinfo(); ?>" >> app/index.php
