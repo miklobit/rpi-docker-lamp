@@ -46,6 +46,7 @@ RUN a2dismod php7.3 && \
     a2enmod proxy_fcgi setenvif && \
     a2enconf php7.3-fpm && \
   service apache2 restart  
+RUN systemctl enable php7.3-fpm  
 
 # Configure /app folder with sample app
 RUN mkdir app && echo "<?php phpinfo(); ?>" >> app/index.php
